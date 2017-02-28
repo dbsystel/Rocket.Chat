@@ -92,16 +92,17 @@ class RedlinkAdapter {
 		 */
 		const _postprocessPrepare = function(prepareResponse){
 			prepareResponse.queryTemplates.filter((template) => template.queryType === "Sonstiges")
-			.forEach((template)=>template.queries
-				.forEach((query)=>{switch (query.creator) {
-			case 'Hasso-MLT':
-				query.creator = 'Konversationen';
-				query.displayTitle = 'Ähnliches';
-				break;
-			}
-		}));
+				.forEach((template)=>template.queries
+					.forEach((query)=>{switch (query.creator) {
+						case 'Hasso-MLT':
+							query.creator = 'Konversationen';
+							query.displayTitle = 'Ähnliches';
+							break;
+					}
+					}));
 			return prepareResponse;
 		};
+
 
 		const knowledgeProviderResultCursor = this.getKnowledgeProviderCursor(message.rid);
 		const latestKnowledgeProviderResult = knowledgeProviderResultCursor.fetch()[0];
@@ -149,8 +150,6 @@ class RedlinkAdapter {
 			}
 		};
 
-
-
 		/**
 		 * We might have modified a prepare resonse earlier.
 		 * If we want to revert this adaptation
@@ -179,26 +178,6 @@ class RedlinkAdapter {
 			return results;
 		};
 
-		//private methods
-		/** This method adapts the service response.
-		 * It is intended to make it easier for the consumer to digest the results provided by the AI
-		 * @param prepareResponse
-		 * @returns prepareResponse
-		 * @private
-		 */
-		const _postprocessPrepare = function(prepareResponse){
-			prepareResponse.queryTemplates.filter((template) => template.queryType === "Sonstiges")
-				.forEach((template)=>template.queries
-					.forEach((query)=>{switch (query.creator) {
-						case 'Hasso-MLT':
-							query.creator = 'Konversationen';
-							query.displayTitle = 'Ähnliches';
-							break;
-					}
-					}));
-			return prepareResponse;
-		};
-
 		// ---------------- private methods
 
 		var results = [];
@@ -224,11 +203,14 @@ class RedlinkAdapter {
 					context: latestKnowledgeProviderResult.result.context
 				};
 
+				//adapt creator
 				switch (creator){
 					case 'Konversationen':
-						creator ='Hasso-MLT';
+						creator = 'Hasso-MLT';
 						break;
 				}
+
+
 
 				const responseRedlinkResult = HTTP.post(this.properties.url + '/result/' + creator + '/?templateIdx=' + templateIndex, options);
 				if (responseRedlinkResult.data && responseRedlinkResult.statusCode === 200) {
@@ -261,6 +243,14 @@ class RedlinkAdapter {
 						});
 						results.reduce((result)=>!!result.messages);
 					}
+					results = _postprocessResultResponse(results);
+
+					//adapt creator
+					switch (creator){
+						case 'Hasso-MLT':
+							creator = 'Konversationen';
+							break;
+					};
 
 					//buffer the results
 					let inlineResultsMap = latestKnowledgeProviderResult.inlineResults || {};
