@@ -36,15 +36,26 @@ Package.onUse(function (api) {
 	addDirectory(api,'client/views/app/tabbar', 'client');
 
 	//i18n
+	const _ = Npm.require('underscore');
+	const fs = Npm.require('fs');
+	var tapi18nFiles = _.compact(_.map(fs.readdirSync('packages/reisebuddy-redlink/i18n'), function(filename) {
+		if (fs.statSync('packages/reisebuddy-redlink/i18n/' + filename).size > 16) {
+			return 'i18n/' + filename;
+		}
+	}));
+	api.use('tap:i18n@1.8.2', ['client', 'server']);
+	api.imply('tap:i18n');
+	api.addFiles(tapi18nFiles, ['client', 'server'])
 
-	api.use('tap:i18n@1.8.2', ["client", "server"]);
+
+	//i18n
+	/*api.use('tap:i18n@1.8.2', ["client", "server"]);
+
 	var fs = Npm.require('fs');
 	var _ = Npm.require('underscore');
-	var workingDir = process.env.PWD ||  '.';
-	fs.readdirSync(workingDir + '/packages/reisebuddy-redlink/i18n').forEach(function (filename) {
+	var workingDir = process.env.PWD || '.';
+	fs.readdirSync(workingDir + '/packages/dbs-ai/i18n').forEach(function(filename) {
 		console.log('loaded i18n', filename);
-		api.addFiles('i18n/', + filename, ['client', 'server']);
-	});
-
-
+		api.addFiles('i18n/' + filename, ["client", "server"]);
+	});*/
 });
