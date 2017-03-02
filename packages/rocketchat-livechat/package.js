@@ -40,6 +40,7 @@ Package.onUse(function(api) {
 	api.use('rocketchat:sms');
 	api.use('tracker');
 	api.use('less');
+	api.use(['reisebuddy:common']);
 
 	api.addFiles('livechat.js', 'server');
 	api.addFiles('server/startup.js', 'server');

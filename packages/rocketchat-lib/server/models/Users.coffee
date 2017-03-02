@@ -369,6 +369,14 @@ class ModelUsers extends RocketChat.models._Base
 			else
 				unsetData.phone = 1
 
+# RB: CRM integration: Persist ID of user in CRM-System
+		if data.crmContactId?
+			if not _.isEmpty(s.trim(data.crmContactId))
+				setData.crmContactId = data.crmContactId
+			else
+				unsetData.crmContactId = 1
+# /RB
+		
 		update = {}
 
 		if not _.isEmpty setData

@@ -57,6 +57,10 @@ RocketChat.Livechat = {
 			const routingMethod = RocketChat.settings.get('Livechat_Routing_Method');
 			room = RocketChat.QueueMethods[routingMethod](guest, message, roomInfo);
 
+//	RB: Callback added in order to be able to create a new contact in CRM for the user who starte the livechat
+			Meteor.defer(RocketChat.callbacks.run('afterCreateLivechat', guest, room));
+//	RB
+
 			newRoom = true;
 		} else {
 			room = Meteor.call('canAccessRoom', message.rid, guest._id);
@@ -154,6 +158,10 @@ RocketChat.Livechat = {
 			updateUser.$set.visitorEmails = [
 				{ address: email }
 			];
+		}
+
+		if (other) {
+			updateUser.$set = _.extend(updateUser.$set, other);
 		}
 
 		Meteor.users.update(userId, updateUser);
@@ -259,10 +267,20 @@ RocketChat.Livechat = {
 	},
 
 	forwardOpenChats(userId) {
-		RocketChat.models.Rooms.findOpenByAgent(userId).forEach((room) => {
-			const guest = RocketChat.models.Users.findOneById(room.v._id);
-			this.transfer(room, guest, { departmentId: guest.department });
-		});
+//	RB: rooms should go into the pool if agent goes offline
+		if (RocketChat.settings.get('Livechat_Routing_Method') === 'Guest_Pool') {
+			SystemLogger.log("User offline forward his conversations: " + userId);
+			RocketChat.models.Rooms.findOpenByAgent(userId).forEach((room) => {
+				SystemLogger.log("forwarding back to pool: " + room._id);
+				this.returnInquiry(room._id, userId);
+			});
+//	RB
+		} else {
+			RocketChat.models.Rooms.findOpenByAgent(userId).forEach((room) => {
+				const guest = RocketChat.models.Users.findOneById(room.v._id);
+				this.transfer(room, guest, {departmentId: guest.department});
+			});
+		}
 	},
 
 	savePageHistory(token, pageInfo) {

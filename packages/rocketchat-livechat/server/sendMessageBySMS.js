@@ -1,4 +1,9 @@
 RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
+
+	if(!!RocketChat.settings.get('Reisebuddy_active')) {
+		return message;
+	}
+
 	// skips this callback if the message was edited
 	if (message.editedAt) {
 		return message;

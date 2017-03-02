@@ -117,6 +117,11 @@ random@1.0.10
 rate-limit@1.0.6
 reactive-dict@1.1.8
 reactive-var@1.0.11
+reisebuddy:common@0.0.1
+reisebuddy:communication@0.0.1
+reisebuddy:livechat@0.0.2
+reisebuddy:redlink@0.0.1
+reisebuddy:vtiger@0.8.7
 reload@1.1.11
 retry@1.0.9
 rocketchat:action-links@0.0.1

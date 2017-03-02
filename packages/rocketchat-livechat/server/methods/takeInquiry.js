@@ -49,6 +49,12 @@ Meteor.methods({
 		// mark inquiry as taken
 		RocketChat.models.LivechatInquiry.takeInquiry(inquiry._id);
 
+// RB: Callback added in order to be able to create a new contact in CRM for the user who starte the livechat
+		Meteor.defer(() => {
+			RocketChat.callbacks.run('afterTakeInquiry', inquiry);
+		});
+// /RB
+
 		// remove sending message from guest widget
 		// dont check if setting is true, because if settingwas switched off inbetween  guest entered pool,
 		// and inquiry being taken, message would not be switched off.
