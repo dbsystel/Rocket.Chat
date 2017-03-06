@@ -36,7 +36,7 @@ RocketChat.callbacks.add('afterSaveMessage', function(message, room) {
 
 	const visitor = RocketChat.models.Users.getVisitorByToken(room.v.token);
 
-	if (!visitor || !visitor.profile || !visitor.phone || visitor.phone.length === 0) {
+	if (!visitor || !visitor._id|| !visitor.phone || visitor.phone.length === 0) {
 		return message;
 	}
 
