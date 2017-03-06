@@ -18,14 +18,14 @@ RocketChat.API.v1.addRoute('livechat/sms-incoming/:service', {
 		};
 
 		if (visitor) {
-			const rooms = RocketChat.models.Rooms.findOpenByVisitorToken(visitor.profile.token).fetch();
+			const rooms = RocketChat.models.Rooms.findOpenByVisitorToken(visitor._id).fetch();
 
 			if (rooms && rooms.length > 0) {
 				sendMessage.message.rid = rooms[0]._id;
 			} else {
 				sendMessage.message.rid = Random.id();
 			}
-			sendMessage.message.token = visitor.profile.token;
+			sendMessage.message.token = visitor._id
 		} else {
 			sendMessage.message.rid = Random.id();
 			sendMessage.message.token = Random.id();

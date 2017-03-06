@@ -45,13 +45,13 @@ RB_API.addRoute('incoming/:service', {
 			}
 		};
 		if (visitor) {
-			const rooms = RocketChat.models.Rooms.findOpenByVisitorToken(visitor.profile.token).fetch();
+			const rooms = RocketChat.models.Rooms.findOpenByVisitorToken(visitor._id).fetch();
 			if (rooms && rooms.length > 0) {
 				sendStub.message.rid = rooms[0]._id;
 			} else {
 				sendStub.message.rid = Random.id();
 			}
-			sendStub.message.token = visitor.profile.token;
+			sendStub.message.token = visitor._id;
 		} else {
 			sendStub.message.rid = Random.id();
 			sendStub.message.token = Random.id();
