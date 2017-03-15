@@ -1,4 +1,4 @@
-//RocketChat.roomTypes.updateTemplate('l', 'reisebuddy_livechat');
+RocketChat.roomTypes.updateTemplate('l', 'reisebuddy_livechat');
 
 RocketChat.TabBar.removeButton('visitor-info');
 
